@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -8,6 +9,19 @@ from typing import Optional
 
 app = FastAPI()
 
+# Allow CORS for specific origins (such as your frontend URL)
+origins = [
+    "http://localhost:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Secret key to sign JWT tokens (should be kept secret and not hardcoded)
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
@@ -15,8 +29,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Example users (in real applications, use a database)
 fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
+    "user@mail.com": {
+        "username": "user@mail.com",
         "hashed_password": "$2b$10$ELJWp3MwxtMR2tmlVTvyO.eZ886br5jlDOOOr.qSvzSNEXM.3O6cu", # hased version of 'secret'
     }
 }
